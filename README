@@ -1,0 +1,22 @@
+this is final project in master degree in computer science
+Adi Apel, ID: 307983635
+please see word documentation for further information
+
+run instructions:
+you need python 3.9 to run the program and to install the following packages:
+- torch
+- torchvision
+- matplotlib
+- sklearn
+
+in order to use pre-trained model for MNIST dataset,
+you can download in from here:
+https://drive.google.com/file/d/1HJV2nUHJqclXQ8flKvcWmjZ-OU5DGatl/view
+and place it in data folder in the main project
+
+in order to use pretrained model for CIFAR-10 dataset:
+1. use this code:
+    url = "https://huggingface.co/bhumong/resnet18_cifar10/resolve/main/resnet18_cifar10.pth"
+    r = requests.get(url)
+    open("data/resnet18_cifar10.pth", "wb").write(r.content)
+2. uncomment the relevant line in create_CIFAR_10_model method
