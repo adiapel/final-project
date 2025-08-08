@@ -64,7 +64,8 @@ def show_results(images, is_mnist):
     n = len(images)
     fig, axes = plt.subplots(n, COLS, figsize=(10, 11))
     for i in range(n):
-        epsilon = models.EPSILONS[i]
+        epsilons = models.EPSILONS_FOR_MNIST if is_mnist else models.EPSILONS_FOR_CIFAR
+        epsilon = epsilons[i]
         data, orig_label, adv_data, final_label = images[i][0:4]
         data = dim_helper(data, is_mnist)
         adv_data = dim_helper(adv_data, is_mnist)

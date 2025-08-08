@@ -9,7 +9,9 @@ import torch.nn.functional as F
 import torch.optim as optim
 
 PRETRAINED_MODEL_PATH = "lenet_mnist_model.pth"
-EPSILONS = [0.01, 0.1, 0.2, 0.5]
+EPSILONS_FOR_MNIST = [0.05, 0.15, 0.25, 0.5]
+EPSILONS_FOR_CIFAR = [0.01, 0.05, 0.1, 0.2]
+
 # Required normalization for pretrained ResNet on CIFAR-10
 MEAN = [0.4914, 0.4822, 0.4465]
 STD = [0.2023, 0.1994, 0.2010]

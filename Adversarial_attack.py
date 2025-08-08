@@ -4,8 +4,10 @@ import GUI
 import models
 import numpy as np
 
-ALPHA = 0.01
-ITERS = 20
+ALPHA_FOR_CIFAR = 0.001
+ALPHA_FOR_MNIST = 0.01
+ITERS_FOR_MNIST = 40
+ITERS_FOR_CIFAR = 10
 
 
 def fgsm_attack(image, epsilon, data_grad, is_mnist):
@@ -26,7 +28,7 @@ def fgsm_attack(image, epsilon, data_grad, is_mnist):
     return torch.max(torch.min(perturbed_image, clamp_max), clamp_min)
 
 
-def pgd_attack(model, images, labels, epsilon, alpha=ALPHA, iters=ITERS):
+def pgd_attack(model, images, labels, epsilon, iters, alpha):
     """
     this function creates the PGD attack on an image
     :param model:
@@ -64,7 +66,8 @@ def adversarial_attack(is_mnist, is_fgsm):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = model.to(device)
     data_iter = iter(test_loader)
-    for i in range(len(models.EPSILONS)):
+    epsilons = models.EPSILONS_FOR_MNIST if is_mnist else models.EPSILONS_FOR_CIFAR
+    for i in range(len(epsilons)):
         image, label = next(data_iter)
         image, label = image.to(device), label.to(device)
         image.requires_grad = True
@@ -75,9 +78,11 @@ def adversarial_attack(is_mnist, is_fgsm):
         model.zero_grad()
         loss.backward()
         if is_fgsm:
-            perturbed_data = fgsm_attack(image, models.EPSILONS[i], image.grad, is_mnist)
+            perturbed_data = fgsm_attack(image, epsilons[i], image.grad, is_mnist)
         else:
-            perturbed_data = pgd_attack(model, image, label, models.EPSILONS[i])
+            iters = ITERS_FOR_MNIST if is_mnist else ITERS_FOR_CIFAR
+            alpha = ALPHA_FOR_MNIST if is_mnist else ALPHA_FOR_CIFAR
+            perturbed_data = pgd_attack(model, image, label, epsilons[i], iters, alpha)
         output = model(perturbed_data)
         final_pred = output.argmax(dim=1)
         if not is_mnist:
